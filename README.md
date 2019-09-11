@@ -18,7 +18,7 @@ A cloud based remote android managment suite, powered by NodeJS
 - Live Notification Logging
 - View WiFi Networks (logs previously seen)
 - File Explorer & Downloader
-- Commang Queuing
+- Command Queuing
 - Built In APK Builder
 
 ## Prerequisites 
@@ -43,21 +43,23 @@ A cloud based remote android managment suite, powered by NodeJS
 
 4. Download and Extract the latest release (v1.0.0) from [HERE](https://github.com/etechd/L3MON/releases/download/1.0.0/L3MON-v1.0.0.zip)
 
-5. In the extracted folder, run `index.js` with pm2
-    - `pm2 start index.js`
+5. In the extracted folder, run these commands
+    - `npm install` <- install dependencies
+    - `pm2 start index.js` <-- start the script
     - `pm2 startup` <- to run L3MON on startup
 
 6. Set a Username & Password
-    1. Open `maindb.json` in a text editor
-    2. under `admin` 
+    1. Stop L3MON `pm2 stop index`
+    2. Open `maindb.json` in a text editor
+    3. under `admin` 
         - set the `username` as plain text
         - set the `password` as a LOWERCASE MD5 hash
-    3. save the file
-    4. run `pm2 restart all`
+    4. save the file
+    5. run `pm2 restart all`
 
 7. in your browser navigate to `http://<SERVER IP>:22533`
     
-It's reccomended to run L3MON behind a reverse proxy such as [NGINX](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
+It's recommended to run L3MON behind a reverse proxy such as [NGINX](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
 
 ## Screenshots
 | | | |
