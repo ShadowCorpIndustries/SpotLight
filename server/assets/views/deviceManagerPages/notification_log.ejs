@@ -1,0 +1,27 @@
+<div class="ui segment">
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Package</th>
+                <th>Content</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% pageData.forEach((notification) => { 
+                let date = new Date(parseInt(notification.postTime));
+            %>
+            <tr>
+                <td class="collapsing"><%= date.toLocaleString('en-GB', { timeZone: 'UTC' }) %></td>
+                <td class="collapsing" title="<%= notification.appName %>"><a
+                        href="?filter=<%= notification.appName %>"><%= notification.appName.substring(0,24) %></a>
+                </td>
+                <td>
+                    <b><%= notification.title %></b><br>
+                    <%= notification.content %>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>

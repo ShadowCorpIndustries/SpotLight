@@ -1,0 +1,20 @@
+<div class="ui segment">
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Content</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% pageData.forEach((notification) => { 
+                    let date = new Date(notification.time);
+                %>
+            <tr>
+                <td class="collapsing"><%= date.toLocaleString('en-GB', { timeZone: 'UTC' }) %></td>
+                <td><%= notification.content %></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>

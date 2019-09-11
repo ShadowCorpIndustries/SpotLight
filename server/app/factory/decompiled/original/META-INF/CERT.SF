@@ -1,0 +1,35 @@
+Signature-Version: 1.0
+Created-By: 1.0 (Android)
+SHA1-Digest-Manifest: pm5TvSNi16Ol/X4YYNiJRba0DUY=
+X-Android-APK-Signed: 2
+
+Name: AndroidManifest.xml
+SHA1-Digest: gXSXejBUkPeuZhOu1yuiHqQeTaA=
+
+Name: classes.dex
+SHA1-Digest: rB8Afn6vf1pahMH/ngOAgOBbbB4=
+
+Name: res/layout-v17/activity_main.xml
+SHA1-Digest: M5WyGyXAf2YfyxbpvAFTz15vzxM=
+
+Name: res/layout/activity_main.xml
+SHA1-Digest: ISml5/kpf13n1scryKiS6UGwrtw=
+
+Name: res/mipmap-hdpi-v4/ic_launcher.png
+SHA1-Digest: 0GPLI5clOisH/92tQ6Af+F3ISFM=
+
+Name: res/mipmap-mdpi-v4/ic_launcher.png
+SHA1-Digest: VbZayF+2BxfDoYjdttxKwjRN2Kc=
+
+Name: res/mipmap-xhdpi-v4/ic_launcher.png
+SHA1-Digest: Vh4HGlhg/noLgnEYBPQl+8t1T8s=
+
+Name: res/mipmap-xxhdpi-v4/ic_launcher.png
+SHA1-Digest: ZrYhU50BDH4ZvicBNdTbk26CxPU=
+
+Name: res/mipmap-xxxhdpi-v4/ic_launcher.png
+SHA1-Digest: fyEuR5AsiwCxRt1+sW6c3koFCGs=
+
+Name: resources.arsc
+SHA1-Digest: rVaOUkXRkr29IKtlewD5L3z8t2M=
+

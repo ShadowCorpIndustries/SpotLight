@@ -1,0 +1,22 @@
+<div class="ui segment">
+    <div class="ui secondary menu">
+        <div class="right menu">
+            <button onclick="updateButton(this, '0xPM')" class="ui blue button"> <i
+                    class="icon sync"></i>Update</button>
+        </div>
+    </div>
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% pageData.forEach((permission) => { %>
+            <tr>
+                <td><%= permission %></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>

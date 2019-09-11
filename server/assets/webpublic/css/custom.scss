@@ -1,0 +1,47 @@
+.hoverEdit {
+    .item {
+        &.active {
+            background-color: #eaeaea !important;
+        }
+
+        &:hover {
+            background-color: #fbfbfb !important;
+            border-color: rgba(34, 36, 38, .25) !important;
+        }
+    }
+}
+
+.event {
+    i.arrow.icon {
+        top: 15px;
+        position: relative;
+    }
+}
+
+.logs {
+    background-color: rgb(77, 77, 77);
+    min-height: 600px;
+    max-height: 600px;
+    width: 100%;
+    border-radius: 5px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    color: #fff;
+    font-family: 'Courier New', Courier, monospace;
+    word-wrap: break-word;
+    padding: 10px;
+
+    .logitm {
+        &.INFO {
+            color: #6781f8
+        }
+
+        &.SUCCESS {
+            color: #2ecc71
+        }
+
+        &.ERROR {
+            color: #f03434
+        }
+    }
+}

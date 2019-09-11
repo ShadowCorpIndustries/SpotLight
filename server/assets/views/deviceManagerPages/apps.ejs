@@ -1,0 +1,26 @@
+<div class="ui segment">
+    <div class="ui secondary menu">
+        <div class="right menu">
+            <button onclick="updateButton(this, '0xIN')" class="ui blue button"> <i
+                    class="icon sync"></i>Update</button>
+        </div>
+    </div>
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Package</th>
+                <th>Version</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% pageData.forEach((app) => { %>
+            <tr>
+                <td title="<%= app.appName %>"><%= app.appName.substring(0,24) %></td>
+                <td title="<%= app.packageName %>"><%= app.packageName %></td>
+                <td title="<%= app.versionName %>"><%= app.versionName.substring(0,12) %></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>

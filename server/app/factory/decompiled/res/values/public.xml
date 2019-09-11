@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <public type="color" name="colorAccent" id="0x7f010000" />
+    <public type="color" name="colorPrimary" id="0x7f010001" />
+    <public type="color" name="colorPrimaryDark" id="0x7f010002" />
+    <public type="dimen" name="activity_horizontal_margin" id="0x7f020000" />
+    <public type="dimen" name="activity_vertical_margin" id="0x7f020001" />
+    <public type="id" name="activity_main" id="0x7f030000" />
+    <public type="id" name="progressBar" id="0x7f030001" />
+    <public type="layout" name="activity_main" id="0x7f040000" />
+    <public type="mipmap" name="ic_launcher" id="0x7f050000" />
+    <public type="string" name="app_name" id="0x7f060000" />
+    <public type="style" name="AppTheme" id="0x7f070000" />
+</resources>

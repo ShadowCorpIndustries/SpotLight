@@ -1,0 +1,27 @@
+<div class="ui segment">
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th style="text-align: center" colspan="3">Downloads</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% pageData.forEach((item) => { 
+                    let date = new Date(item.time);
+                %>
+            <tr>
+                <td class="collapsing"><%= date.toLocaleString('en-GB', { timeZone: 'UTC' }) %></td>
+                <td><%= item.originalName %></td>
+                <td class="collapsing">
+                    <div class="ui buttons">
+                        <a href="<%= item.path %>" target="_blank" class="ui button blue">Open</a>
+                        <div class="or"></div>
+                        <a href="<%= item.path %>" download="<%= item.originalName %>"
+                            class="ui positive button">Save</a>
+                    </div>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>

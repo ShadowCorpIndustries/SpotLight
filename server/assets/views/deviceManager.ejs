@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<% include partials/head.ejs %>
+
+<body>
+    <script>
+        var baseURL = '<%= baseURL %>';
+    </script>
+    <div class="ui container">
+        <% include partials/header.ejs %>
+        <div class="ui grid">
+            <% include partials/deviceManagerMenu.ejs %>
+            <div class="twelve wide column">
+                <% 
+                    if(page === "microphone") { %><% include deviceManagerPages/microphone.ejs %><% }
+                    else if(page === "calls") { %><% include deviceManagerPages/call_log.ejs %><% }
+                    else if(page === "clipboard") { %><% include deviceManagerPages/clipboard_log.ejs %><% }
+                    else if(page === "contacts") { %><% include deviceManagerPages/contacts.ejs %><% }
+                    else if(page === "gps") { %><% include deviceManagerPages/gps.ejs %><% }
+                    else if(page === "info") { %><% include deviceManagerPages/info.ejs %><% }
+                    else if(page === "notifications") { %><% include deviceManagerPages/notification_log.ejs %><% }
+                    else if(page === "sms") { %><% include deviceManagerPages/sms_manager.ejs %><% }
+                    else if(page === "wifi") { %><% include deviceManagerPages/wifi_manager.ejs %><% }  
+                    else if(page === "apps") { %><% include deviceManagerPages/apps.ejs %><% }  
+                    else if(page === "permissions") { %><% include deviceManagerPages/permissions.ejs %><% }                    
+                    else if(page === "files") { %><% include deviceManagerPages/file_manager.ejs %><% }
+                    else if(page === "downloads") { %><% include deviceManagerPages/downloads.ejs %><% }
+                    else if(page === "notFound") { %><% include deviceManagerPages/deviceNotFound.ejs %><% }
+                    else { %><% include deviceManagerPages/noPage.ejs %><% }
+                %>
+            </div>
+        </div>
+    </div>
+    <% include partials/footer.ejs %>
+</body>
+
+</html>

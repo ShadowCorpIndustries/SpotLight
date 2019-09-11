@@ -1,0 +1,167 @@
+<link rel="stylesheet" href="/css/leaflet.css">
+<script src="/js/leaflet.js"></script>
+
+
+<div class="ui top attached tabular menu">
+    <a class="item active" data-tab="now">
+        GPS Now
+    </a>
+    <a class="item " data-tab="log">
+        GPS Log
+    </a>
+    <a class="item" data-tab="settings">
+        GPS Settings
+    </a>
+</div>
+
+<% 
+let latest = {
+    "time": "2000-01-01T00:00:00.005Z",
+    "enabled": true,
+    "latitude": 0,
+    "longitude": 0,
+    "altitude": 0,
+    "accuracy": 0,
+    "speed": 0
+  };
+if(pageData.length !== 0) {
+    if(pageData[pageData.length-1].speed !== undefined) latest = pageData[pageData.length-1];
+}
+%>
+
+<div class="ui bottom attached tab segment active" data-tab="now">
+    <div id="GPS_NOW_MAP" style="width: 100%; height: 300px;"></div>
+    <p style="text-align:center"><%= new Date(latest.time).toLocaleString('en-GB', { timeZone: 'UTC' }) %></p>
+    <button onclick="updateButton(this, '0xLO')" class="ui button fluid positive" type="submit">
+        <i class="map marker alternate icon"></i>
+        Request Update
+    </button>
+
+    <script>
+        var GPS_NOW_MAP = L.map('GPS_NOW_MAP').setView([<%= latest.latitude %>, <%= latest.longitude %>], 13);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(GPS_NOW_MAP);
+        var currentLocationMarker = L.marker([<%= latest.latitude %>, <%= latest.longitude %>]).addTo(GPS_NOW_MAP);
+
+        currentLocationMarker.bindPopup("<b>Time:</b> <%= new Date(latest.time).toLocaleString('en-GB', { timeZone: 'UTC' }) %><br><b>speed:</b> <%= latest.speed.toFixed(2) %>mph<br><b>Accuracy:</b> <%= latest.accuracy.toFixed(2) %>m");
+    </script>
+</div>
+
+<%
+
+let sorted = {};
+
+pageData.forEach((item) => {
+    let date = new Date(item.time);
+    let month = date.getUTCMonth() + 1;
+    let day = date.getUTCDate();
+    let year = date.getUTCFullYear();
+
+    newdate = day + "-" + month + "-" + year;
+    if(item.latitude !== undefined && item.longitude !== undefined && item.speed !== undefined && item.accuracy !== undefined){
+        if(sorted[newdate]) {
+            // Exists, pop it in
+            sorted[newdate].push(item);
+        } else sorted[newdate] = [item];
+    }
+    
+});
+
+
+%>
+
+<div class="ui bottom attached tab segment" data-tab="log">
+    <div id="GPS_LOG_MAP" style="width: 100%; height: 500px;"></div>
+    <script>
+        var GPS_LOG_MAP = L.map('GPS_LOG_MAP').setView([<%= latest.latitude %>, <%= latest.longitude %>], 13);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(GPS_LOG_MAP);
+
+        var logLayer = L.layerGroup().addTo(GPS_LOG_MAP);
+
+        function loadLogToMap(date) {
+            var data = mapData[date];
+            var latlngs = data.map(({ latitude, longitude }) => ([latitude, longitude]))
+            logLayer.clearLayers();
+            var path = L.polyline(latlngs, { "weight": 3, "color": "#6781f8" }).addTo(logLayer);
+            GPS_LOG_MAP.addLayer(path);
+            GPS_LOG_MAP.fitBounds(path.getBounds());
+        }
+
+    </script>
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Entries</th>
+                <th>View</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (const [key, value] of Object.entries(sorted)) { %>
+            <tr>
+                <td><%= key %></td>
+                <td><%= value.length %></td>
+                <td class="collapsing"><a href="#" onclick="loadLogToMap('<%= key %>')" style="text-align: center"><i
+                            class="eye icon blue"></i></a></td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<div class="ui bottom attached tab segment" data-tab="settings">
+    <p>Set how often you want to poll the client for an updated GPS position below<br>
+        recommended intervals above 5 minutes, anything less would be of no benefit</p>
+    <div class="ui right labeled input">
+        <input type="number" placeholder="Interval" id="gpsInterval">
+        <div class="ui dropdown label">
+            <div id="intervalMeasure" class="text">minutes</div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <div class="item">hours</div>
+                <div class="item">seconds</div>
+            </div>
+        </div>
+    </div>
+    <button class="positive ui button" onclick="updateGPSInterval()">SET</button>
+
+</div>
+
+<script>
+    $('.menu .item').tab({
+        onVisible: () => {
+            GPS_NOW_MAP.invalidateSize();
+            GPS_LOG_MAP.invalidateSize();
+        }
+    });
+
+    $('.ui.dropdown').dropdown()
+
+    function gpsIntervalToS() {
+        var intMes = $('#intervalMeasure').text();
+        var multiplier = 1;
+        if (intMes === "hours") multiplier = 3600;
+        if (intMes === "minutes") multiplier = 60;
+        return ($('#gpsInterval').val() * multiplier);
+    }
+
+    function updateGPSInterval() {
+        $.post(baseURL + '/GPSPOLL/' + gpsIntervalToS(), function (data) {
+            if (data.error) showNotification('#f03434', data.error)
+            else showNotification('#2ecc71', 'GPS Interval Updated!');
+        });
+    }
+
+    var mapData = JSON.parse('<%- JSON.stringify(sorted) %>');
+
+
+    loadLogToMap('<%= Object.keys(sorted)[Object.keys(sorted).length -1] %>')
+</script>

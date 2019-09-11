@@ -1,0 +1,27 @@
+<div class="ui segment">
+    <div class="ui secondary menu">
+        <div class="right menu">
+            <button onclick="updateButton(this, '0xCO')" class="ui blue button"> <i
+                    class="icon sync"></i>Update</button>
+        </div>
+    </div>
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th colspan="2">Logs</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% pageData.forEach((contact) => { %>
+            <tr>
+                <td><%= contact.name %></td>
+                <td><%= contact.phoneNo %></td>
+                <td class="collapsing"><a href="<%= baseURL %>/calls?filter=<%= contact.phoneNo %>">Call Log</a></td>
+                <td class="collapsing"><a href="<%= baseURL %>/sms?filter=<%= contact.phoneNo %>">SMS Log</a></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>

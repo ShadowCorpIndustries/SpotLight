@@ -1,0 +1,55 @@
+<div class="ui segment">
+    <div class="ui secondary menu">
+        <div class="right menu">
+            <button onclick="updateButton(this, '0xWI')" class="ui blue button"> <i
+                    class="icon sync"></i>Update</button>
+        </div>
+    </div>
+    <h3 class="ui grey dividing header">Current</h3>
+
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>SSID</th>
+                <th>BSSID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% pageData.now.forEach((wifi) => { %>
+            <tr>
+                <td><%= wifi.SSID %></td>
+                <td><%= wifi.BSSID %></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+
+    <h3 class="ui grey dividing header">History</h3>
+
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>SSID</th>
+                <th>BSSID</th>
+                <th>Discovered On</th>
+                <th>Last Seen</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% 
+            pageData.log.forEach((wifi) => { 
+                let firstSeen = new Date(wifi.firstSeen);
+                let lastSeen = new Date(wifi.lastSeen);
+                %>
+            <tr>
+                <td><%= wifi.SSID %></td>
+                <td><%= wifi.BSSID %></td>
+                <td><%= firstSeen.toLocaleString('en-GB', { timeZone: 'UTC' }) %></td>
+                <td><%= lastSeen.toLocaleString('en-GB', { timeZone: 'UTC' }) %></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+</div>
