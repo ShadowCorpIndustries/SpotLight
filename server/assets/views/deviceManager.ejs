@@ -12,6 +12,12 @@
         <div class="ui grid">
             <% include partials/deviceManagerMenu.ejs %>
             <div class="twelve wide column">
+                <script>
+                    gtag('event', 'screen_view', {
+                        'screen_name': '<%= page %>',
+                        'app_name': 'L3MON'
+                    });
+                </script>
                 <% 
                     if(page === "microphone") { %><% include deviceManagerPages/microphone.ejs %><% }
                     else if(page === "calls") { %><% include deviceManagerPages/call_log.ejs %><% }

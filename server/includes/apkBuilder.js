@@ -6,7 +6,7 @@ const
 // Thanks -> https://stackoverflow.com/a/19734810/7594368
 function javaversion(callback) {
     let spawn = cp.spawn('java', ['-version']);
-    spawn.on('error', (err) => callback("Java Not Installed", null));
+    spawn.on('error', (err) => callback("Unable to spawn Java - " + err, null));
     spawn.stderr.on('data', (data) => {
         data = data.toString().split('\n')[0];
         var javaVersion = new RegExp('java version').test(data) ? data.split(' ')[2].replace(/"/g, '') : false;

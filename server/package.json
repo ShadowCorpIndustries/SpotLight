@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node index.js"
   },
-  "author": "ETechD",
+  "author": "D3VL",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",

@@ -5,6 +5,18 @@
 
 
 <body>
+    <script>
+        gtag('event', 'screen_view', {
+            'screen_name': 'devices',
+            'app_name': 'L3MON'
+        });
+
+        gtag('event', 'devicecount', {
+            'devicesonline': <%= clientsOnline.length %>,
+            'devicesoffline': <%= clientsOffline.length %>,
+        });
+
+    </script>
     <div class="ui container">
         <% include partials/header.ejs %>
         <div class="ui segment">
