@@ -4,17 +4,25 @@ const
     CONST = require('./const');
 
 // Thanks -> https://stackoverflow.com/a/19734810/7594368
+// This function is a pain in the arse, so many issues because of it! -- hopefully this fix, fixes it!
 function javaversion(callback) {
     let spawn = cp.spawn('java', ['-version']);
+    let output = "";
     spawn.on('error', (err) => callback("Unable to spawn Java - " + err, null));
     spawn.stderr.on('data', (data) => {
-        data = data.toString().split('\n')[0];
-        var javaVersion = new RegExp('java version').test(data) ? data.split(' ')[2].replace(/"/g, '') : false;
-        var openJDKVersion = new RegExp('openjdk version').test(data) ? data.split(' ')[2].replace(/"/g, '') : false;
-        if (javaVersion || openJDKVersion) {
-            spawn.removeAllListeners();
-            spawn.stderr.removeAllListeners();
-            return callback(null, javaVersion);
+        output += data.toString();
+    });
+    spawn.on('close', function (code) {
+        let javaIndex = output.indexOf('java version');
+        let openJDKIndex = output.indexOf('openjdk version');
+        let javaVersion = (javaIndex !== -1) ? output.substring(javaIndex, (javaIndex + 27)) : "";
+        let openJDKVersion = (openJDKIndex !== -1) ? output.substring(openJDKIndex, (openJDKIndex + 27)) : "";
+        if (javaVersion !== "" || openJDKVersion !== "") {
+            if (javaVersion.includes("1.8.0") || openJDKVersion.includes("1.8.0")) {
+                spawn.removeAllListeners();
+                spawn.stderr.removeAllListeners();
+                return callback(null, (javaVersion || openJDKVersion));
+            } else return callback("Wrong Java Version Installed. Detected " + (javaVersion || openJDKVersion) + ". Please use Java 1.8.0", undefined);
         } else return callback("Java Not Installed", undefined);
     });
 }
